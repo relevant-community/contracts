@@ -11,7 +11,7 @@ npm-debug.log
 build/
 
 # lol macs
-.DS_Store/
+.DS_Store
 
 # scratchpad
 scratchpad
