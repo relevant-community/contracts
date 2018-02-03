@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 import "./BondingCurve.sol";
 
 /**
- * @title BondingCurve
+ * @title Linear BondingCurve
  * @dev Bonding Curve (rater line) linear y = m * x
  * to compute poolBalance for any given price use integral y = m * 1/2 * x ^ 2
  * inspired by implementations by bancor protocol and simondlr

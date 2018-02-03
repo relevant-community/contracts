@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 import "./BondingCurve.sol";
 
 /**
- * @title BondingCurve
+ * @title Squareroot BondingCurve
  * @dev Bonding Curve based on a square root curve y = m * x ^ 1/2
  * to compute poolBalance for any given price use the integral y = m * 2/3 * x ^ 3/2
  * inspired by implementations by bancor protocol and simondlr
