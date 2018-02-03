@@ -1,0 +1,28 @@
+{
+  "name": "relevant-contracts",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "truffle test",
+    "watch": "npm-watch"
+  },
+  "dependencies": {
+    "npm-watch": "^0.3.0",
+    "zeppelin-solidity": "1.6.0"
+  },
+  "watch": {
+    "test": {
+      "patterns": [
+        "truffle",
+        "test",
+        "contracts"
+      ],
+      "extensions": "js,json,sol"
+    }
+  },
+  "devDependencies": {
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}
