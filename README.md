@@ -1,17 +1,17 @@
-*Relevant Contracts - Bonding Curves, Inflation Token, Relevant Token
+# Relevant Contracts - Bonding Curves, Inflation Token, Relevant Token
 
-**Install
+### Install
 ```
 npm install 
 ```
-**Test
+### Test
 ```
 npm test
 ```
-**Run Tests Continously
+### Run Tests Continously
 ```
 npm watch
 ```
 
-**Working on Bonding Curves
-if you want to test a single bonding curve, edit the 'typs' array in test/BondingCurveAll.test.js 
+### Working on Bonding Curves
+if you want to test a single bonding curve, edit the 'types' array in test/BondingCurveAll.test.js 
