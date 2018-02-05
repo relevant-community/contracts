@@ -30,7 +30,7 @@ contract BondingCurveTokenBase is BondingCurve {
    * @param tokensToMint tokens we want to buy
    * @return {bool}
    */
-  function buyTokens(uint256 tokensToMint) public returns(bool) {
+  function buyTokens(uint256 tokensToMint) public payable returns(bool) {
     uint256 priceForAmount = getBuyPrice(tokensToMint);
     require(basetoken.transferFrom(msg.sender, address(this), priceForAmount));
 
