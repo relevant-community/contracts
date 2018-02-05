@@ -7,7 +7,6 @@ import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
  * @dev Bonding Curve parent contract
  * inspired by implementations by bancor protocol and simondlr
  * https://github.com/ConsenSys/curationmarkets/blob/master/CurationMarkets.sol
- * children should implement getBuyPrice, getSellReward, estimateTokenAmountForPrice, currentCost
  */
 contract BondingCurve is StandardToken {
   // must be divisible by 2 & at least 14 to accurately calculate cost

@@ -5,9 +5,9 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./BancorFormula.sol";
 
 /**
- * @title BondingCurve
- * @dev Bonding Curve parent contract
- * inspired by implementations by bancor protocol and simondlr
+ * @title Universal Bonding Curve
+ * @dev Bonding curve contract based on bacor formula
+ * inspired by bancor protocol and simondlr
  * https://github.com/bancorprotocol/contracts
  * https://github.com/ConsenSys/curationmarkets/blob/master/CurationMarkets.sol
  * uses bancor formula
@@ -15,20 +15,24 @@ import "./BancorFormula.sol";
 contract BondingCurveUniversal is StandardToken, BancorFormula, Ownable {
   uint256 public poolBalance;
 
-  // reserve ratio, represented in ppm, 1-1000000
-  // 1/3 corresponds to y= multiple * x^2
-  // 1/2 corresponds to y= multiple * x
-  // 2/3 corresponds to y= multiple * x^1/2
+  /*
+    reserve ratio, represented in ppm, 1-1000000
+    1/3 corresponds to y= multiple * x^2
+    1/2 corresponds to y= multiple * x
+    2/3 corresponds to y= multiple * x^1/2
+    multiple will depends on contract initialization,
+    specificallytotalAmount and poolBalance parameters
+    we might want to add an 'initialize' function that will allow
+    the owner to send ether to the contract and mint a given amount of tokens
+  */
   uint32 reserveRatio;
 
   /*
     - Front-running attacks are currently mitigated by the following mechanisms:
     TODO - minimum return argument for each conversion provides a way to define a minimum/maximum price for the transaction
     - gas price limit prevents users from having control over the order of execution
-
   */
   uint256 public gasPrice = 0 wei; // maximum gas price for bancor transactions
-
 
   /**
    * @dev default function
