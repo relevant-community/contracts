@@ -85,15 +85,5 @@ contract BondingCurveExp is BondingCurve {
 
     return (i - 1) * d;
   }
-
-  /**
-   * Current cost of tokens - (not really needed - can use getBuyPrice)
-   * @dev Calculates current cost of new token - carefull accuracy is proportional to basePrice
-   * @return {uint} cost of token
-   */
-  function currentCost(uint256 _totalBound) public view returns (uint256 _cost) {
-    uint256 cost = multiple * _totalBound * _totalBound / ( dec * dec );
-    return cost;
-  }
 }
 

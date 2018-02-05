@@ -61,16 +61,6 @@ contract BondingCurveLin is BondingCurve {
     return newTotal;
   }
 
-  /**
-   * Current cost of tokens - (not really needed - can use getBuyPrice)
-   * @dev Calculates current cost of new token - carefull accuracy is proportional to basePrice
-   * @return {uint} cost of token
-   */
-  function currentCost(uint256 _totalBound) public view returns (uint256 _cost) {
-    uint256 cost = multiple * _totalBound / dec;
-    return cost;
-  }
-
   function sqrt(uint256 x) public pure returns (uint256 y) {
     uint256 z = (x + 1) / 2;
     y = x;

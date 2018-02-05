@@ -39,7 +39,6 @@ module.exports = _type => {
       let amountBought = endBalance.valueOf() /
         (10 ** decimals) - startBalance.valueOf() /
         (10 ** decimals);
-      console.log(endBalance.valueOf() / (10 ** decimals));
       assert.isAtMost(Math.abs(amountBought - amount), 1, 'able to buy tokens via fallback');
     });
 
@@ -112,22 +111,6 @@ module.exports = _type => {
       // TEST Sell Reward
       let sellReward = await instance.getSellReward.call(amount * (10 ** decimals));
       assert.equal(sellReward.valueOf(), priceOfTokens.valueOf(), 'sell reward should match buy price');
-    });
-
-    it('should compute bonding curve price correctly', async function () {
-      let amount = 69;
-      let price = await instance.currentCost.call(amount * (10 ** decimals));
-      price = price.valueOf();
-      let priceShouldBe;
-
-      if (type === 'Sqrt') {
-        priceShouldBe = multiple * Math.sqrt(amount);
-      } else if (type === 'Exp') {
-        priceShouldBe = multiple * amount * amount;
-      } else if (type === 'Lin') {
-        priceShouldBe = multiple * amount;
-      }
-      assert.isBelow(Math.abs((price - priceShouldBe) / price), 1 / (10 ** (decimals / 2)), 'price should be close to expected');
     });
 
     it('should return same results as bancor formula', async function () {

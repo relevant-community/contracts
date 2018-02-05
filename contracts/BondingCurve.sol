@@ -14,6 +14,7 @@ contract BondingCurve is StandardToken {
   uint8 public bondingCurveDecimals;
   uint256 public poolBalance = 0;
 
+
   // shorthand for decimal
   // dec = (10 ** uint256(bondingCurveDecimals));
   uint256 dec;
@@ -41,22 +42,16 @@ contract BondingCurve is StandardToken {
 
   /**
    * @dev calculates the area under the curve based on amount
+   * this should not be needed - the ui should compute amount on the client
    * @return tokenAmount
    */
   function estimateTokenAmountForPrice(uint256 price) public view returns(uint256 tokenAmount);
 
-  /**
-   * Current cost of tokens - (not really needed - can use getBuyPrice)
-   * @dev Calculates current cost of new token - carefull accuracy is proportional to basePrice
-   * @return {uint} cost of token
-   */
-  function currentCost(uint256 _totalBound) public view returns (uint256 _cost);
-
 
   /**
    * @dev default function
-   * gas price for this one is 128686 ~ $3 - too high for fallback fn
-   * do we need it?
+   * this is a disrete approximation and shouldn't be used in practice
+   * gas price for this one is 128686
    */
   function() public payable {
     uint256 amount = estimateTokenAmountForPrice(msg.value);
@@ -73,7 +68,7 @@ contract BondingCurve is StandardToken {
     uint256 priceForAmount = getBuyPrice(tokensToMint);
     require(msg.value >= priceForAmount);
 
-    uint256 remainingFunds = msg.value - priceForAmount;
+    uint256 remainingFunds = msg.value.sub(priceForAmount);
 
     // Send back unspent funds
     if (remainingFunds > 0) {
@@ -81,9 +76,9 @@ contract BondingCurve is StandardToken {
       Transfer(0x0, msg.sender, remainingFunds);
     }
 
-    totalSupply_ += tokensToMint;
-    balances[msg.sender] += tokensToMint;
-    poolBalance += msg.value - remainingFunds;
+    totalSupply_ = totalSupply_.add(tokensToMint);
+    balances[msg.sender] = balances[msg.sender].add(tokensToMint);
+    poolBalance = poolBalance.add(msg.value.sub(remainingFunds));
     LogMint(tokensToMint, msg.value - remainingFunds);
     return true;
   }
@@ -95,12 +90,11 @@ contract BondingCurve is StandardToken {
    */
   function sellTokens(uint256 _amountToWithdraw) public returns(bool) {
     require(_amountToWithdraw > 0 && balances[msg.sender] >= _amountToWithdraw);
-    //determine how much you can leave with.
     uint256 reward = getSellReward(_amountToWithdraw);
     msg.sender.transfer(reward);
-    poolBalance -= reward;
-    balances[msg.sender] -= _amountToWithdraw;
-    totalSupply_ -= _amountToWithdraw;
+    poolBalance = poolBalance.sub(reward);
+    balances[msg.sender] = balances[msg.sender].sub(_amountToWithdraw);
+    totalSupply_ = totalSupply_.sub(_amountToWithdraw);
     LogWithdraw(_amountToWithdraw, reward);
     return true;
   }
