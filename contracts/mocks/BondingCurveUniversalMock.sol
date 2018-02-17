@@ -11,7 +11,6 @@ contract BondingCurveUniversalMock is BondingCurveUniversal {
     reserveRatio = _reserveRatio;
     totalSupply_ = _totalSupply;
     poolBalance = _poolBalance;
-
     gasPrice = 26 * (10 ** 9);
   }
 }

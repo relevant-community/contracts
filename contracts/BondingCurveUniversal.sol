@@ -25,7 +25,7 @@ contract BondingCurveUniversal is StandardToken, BancorFormula, Ownable {
     we might want to add an 'initialize' function that will allow
     the owner to send ether to the contract and mint a given amount of tokens
   */
-  uint32 reserveRatio;
+  uint32 public reserveRatio;
 
   /*
     - Front-running attacks are currently mitigated by the following mechanisms:

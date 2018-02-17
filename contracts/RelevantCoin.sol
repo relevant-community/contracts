@@ -3,10 +3,9 @@ pragma solidity ^0.4.18;
 import "./ConvertLib.sol";
 import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./BondingCurveSqrt.sol";
-import "./InflationaryToken.sol";
+import "./RelevantBondingCurve.sol";
 
-contract RelevantCoin is BondingCurveSqrt, InflationaryToken {
+contract RelevantCoin is RelevantBondingCurve {
   using ConvertLib for uint;
 
   // uint public constant MAX_UINT = (2**256) - 1;
@@ -18,7 +17,10 @@ contract RelevantCoin is BondingCurveSqrt, InflationaryToken {
   uint256 public constant TIME_INTERVAL = 1 hours;
   uint256 public constant HOURLY_INFLATION = 1000010880216701200; // 10% annual
   // uint256 public constant INITIAL_SUPPLY = 10000 * (10 ** uint256(decimals));
-  uint256 public constant INITIAL_SUPPLY = 0;
+  uint256 public constant INITIAL_SUPPLY = 1000000 * (10 ** 18);
+  uint256 public constant INITIAL_PRICE = 2 * (10 ** 16);
+  uint32 public constant CURVE_RATIO = 150000;
+  uint256 public constant INITAL_BALANCE = 150000 * 2 * (10 ** 16);
 
   event Log(string logString, uint value);
 
@@ -28,7 +30,7 @@ contract RelevantCoin is BondingCurveSqrt, InflationaryToken {
    * @return {uint} banace in Ether
    */
   function getBalanceInEth(address addr) public view returns(uint){
-    return ConvertLib.convert(balanceOf(addr),2);
+    return ConvertLib.convert(balanceOf(addr), 2);
   }
 
 	/**
@@ -43,9 +45,13 @@ contract RelevantCoin is BondingCurveSqrt, InflationaryToken {
     timeInterval = TIME_INTERVAL;
 
     // bonding curve params
-    bondingCurveDecimals = decimals;
-    dec = 10 ** uint256(bondingCurveDecimals);
-    multiple = 100000000000000; //100000000000000 wei 0.0001 ether
+    reserveRatio = CURVE_RATIO;
+    totalSupply_ = 0;
+    virtualSupply = INITIAL_SUPPLY;
+    poolBalance = 0;
+    inflationSupply = 0;
+    virtualBalance = INITAL_BALANCE;
+    gasPrice = 26 * (10 ** 9);
 
     // token params
     totalSupply_ = INITIAL_SUPPLY;
