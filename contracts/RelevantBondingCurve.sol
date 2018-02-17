@@ -51,6 +51,9 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
 
   /**
    * @dev sell tokens
+   * this function adjust the sell curve by adjusting sell ratio and reserve pool
+   * this creates a large bid-ask spread for large buyers and small bidask for small buyers
+   * alternative method is create a uniform bid-ask by adjust tokenSupply
    * gase cost 86454
    * @param sellAmount amount of tokens to withdraw
    * @return {bool}
@@ -58,12 +61,13 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
   function sell(uint256 sellAmount) public validGasPrice returns(bool) {
     require(sellAmount > 0 && balances[msg.sender] >= sellAmount);
     uint256 tokenSupply = totalSupply_;
-    LogBondingCurve('sellAmount ', sellAmount);
-    LogBondingCurve('totalSupply ', tokenSupply.sub(virtualBalance));
+
     require(sellAmount <= tokenSupply.sub(virtualBalance));
     // compute sell ratio rounding?
     uint32 sellReserveRatio = uint32(reserveRatio * tokenSupply / (tokenSupply + inflationSupply));
-    uint256 ethAmount = calculateSaleReturn(tokenSupply, poolBalance, sellReserveRatio, sellAmount);
+    uint256 sellPoolBalance = poolBalance * sellReserveRatio / reserveRatio;
+
+    uint256 ethAmount = calculateSaleReturn(tokenSupply, sellPoolBalance, sellReserveRatio, sellAmount);
     msg.sender.transfer(ethAmount);
     poolBalance = poolBalance.sub(ethAmount);
     balances[msg.sender] = balances[msg.sender].sub(sellAmount);
@@ -72,4 +76,3 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
     return true;
   }
 }
-
