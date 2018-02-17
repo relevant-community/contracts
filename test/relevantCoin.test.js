@@ -11,13 +11,10 @@ contract('RelevantCoin', function (accounts) {
 
   async function getRequestParams(amount) {
     let supply = await instance.totalSupply.call();
-    let virtualSupply = await instance.virtualSupply.call();
+    supply = supply.valueOf();
 
-    supply = supply.toNumber() + virtualSupply.toNumber();
     let poolBalance = await instance.poolBalance.call();
-    let virtualBalance = await instance.virtualBalance.call();
-
-    poolBalance = poolBalance.toNumber() + virtualBalance.toNumber();
+    poolBalance = poolBalance.valueOf();
 
     let solRatio = await instance.reserveRatio.call();
     let reserveRatio = solRatio.toNumber() / 1000000;
@@ -65,7 +62,6 @@ contract('RelevantCoin', function (accounts) {
 
     const startBalance = await instance.balanceOf.call(accounts[0]);
     let p = await getRequestParams(amount);
-    console.log(p);
     let buyTokens = await instance.send(Math.floor(p.price));
     console.log('buyTokens via default gas', buyTokens.receipt.gasUsed);
 
@@ -77,8 +73,6 @@ contract('RelevantCoin', function (accounts) {
       (10 ** decimals);
     assert.isAtMost(Math.abs(amountBought - amount), 1, 'able to buy tokens via fallback');
   });
-
-
 
 
   // it('should call a function that depends on a linked library', function () {

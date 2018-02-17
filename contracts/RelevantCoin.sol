@@ -20,7 +20,7 @@ contract RelevantCoin is RelevantBondingCurve {
   uint256 public constant INITIAL_SUPPLY = 1000000 * (10 ** 18);
   uint256 public constant INITIAL_PRICE = 2 * (10 ** 16);
   uint32 public constant CURVE_RATIO = 150000;
-  uint256 public constant INITAL_BALANCE = 150000 * 2 * (10 ** 16);
+  uint256 public constant INITAL_BALANCE = CURVE_RATIO * INITIAL_SUPPLY * INITIAL_PRICE / (1000000 * 10 ** 18);
 
   event Log(string logString, uint value);
 
@@ -46,11 +46,11 @@ contract RelevantCoin is RelevantBondingCurve {
 
     // bonding curve params
     reserveRatio = CURVE_RATIO;
-    totalSupply_ = 0;
+    totalSupply_ = INITIAL_SUPPLY;
     virtualSupply = INITIAL_SUPPLY;
-    poolBalance = 0;
-    inflationSupply = 0;
+    poolBalance = INITAL_BALANCE;
     virtualBalance = INITAL_BALANCE;
+    inflationSupply = 0;
     gasPrice = 26 * (10 ** 9);
 
     // token params
