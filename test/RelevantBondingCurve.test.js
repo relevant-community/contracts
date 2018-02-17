@@ -57,11 +57,9 @@ contract('BondingCurveUniversal', accounts => {
 
     let inflationSupply = await instance.inflationSupply.call();
     inflationSupply = 1 * inflationSupply.valueOf();
-    console.log('infaltionSupply ', inflationSupply.valueOf());
 
     let rate = 1.1 ** (hours / (365 * 24)) - 1;
     let inflationSupplyTest = actualSupply * rate;
-    console.log(inflationSupplyTest);
     // utils.logHelper(buyTokens.logs, 'LogBondingCurve');
     assert.isAtMost(Math.abs(inflationSupplyTest - inflationSupply), 10 ** 8, 'should mint correct amount of tokens');
   });
@@ -75,28 +73,27 @@ contract('BondingCurveUniversal', accounts => {
     inflationSupply = 1 * inflationSupply.valueOf();
 
     let p = await getRequestParams(amount);
-    console.log('total + inf ', p.supply + inflationSupply);
+    let sellRatio = solRatio * p.supply / (p.supply + inflationSupply);
+    sellRatio = Math.floor(sellRatio);
+    let sellPoolBalance = sellRatio * p.poolBalance / solRatio;
+    sellPoolBalance = Math.floor(sellPoolBalance);
+
     let saleReturn = await instance.calculateSaleReturn.call(
       p.supply,
-      p.poolBalance,
-      solRatio,
+      sellPoolBalance,
+      sellRatio,
       amount
     );
 
-    console.log('saleReturn ', saleReturn.toNumber());
-
     let sell = await instance.sell(amount.valueOf());
     console.log('sellTokens gas ', sell.receipt.gasUsed);
-    utils.logHelper(sell.logs, 'LogBondingCurve');
+    // utils.logHelper(sell.logs, 'LogBondingCurve');
 
     const endBalance = await instance.balanceOf.call(accounts[0]);
     assert.equal(endBalance.valueOf(), 0, 'balance should be 0 tokens');
 
     let endContractBalance = await web3.eth.getBalance(instance.address);
-    console.log(contractBalance);
-    console.log(endContractBalance);
-    assert.equal(saleReturn.valueOf(), contractBalance - endContractBalance, 'contract change should match salre return');
 
+    assert.equal(saleReturn.valueOf(), contractBalance - endContractBalance, 'contract change should match sale return');
   });
-
 });
