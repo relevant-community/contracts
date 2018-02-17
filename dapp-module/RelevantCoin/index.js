@@ -86,7 +86,7 @@ class RelevantCoin {
   }
   inflationSupply () {
     return this.relevantCoin.methods.inflationSupply().call()
-      .then((resp) => {
+    .then((resp) => {
       console.log(resp)
       return resp
     }).catch((err) => {
@@ -449,47 +449,14 @@ class RelevantCoin {
     })
   }
   buy (buyAmount, account) {
-    console.log(buyAmount, account)
     if (!account) return Promise.reject(new Error('Unlock Account'))
     buyAmount = Web3.utils.toWei(buyAmount)
 
     return this.relevantCoin.methods.buy().send({from: account, value: new BN(buyAmount, 10).toString(10)})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
-    .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
   }
   sell (sellAmount, account) {
     if (!account) return Promise.reject(new Error('Unlock Account'))
-    console.log('sell')
-    return this.decimals().then((decimals) => {
-      decimals = Web3.utils.padRight('10', parseInt(decimals, 10));
-      console.log(decimals.toString())
-      sellAmount = new BN(sellAmount).times(decimals).toString()
-      console.log(sellAmount)
-      // .mul(decimals.toString()).toString()
-      return this.relevantCoin.methods.sell(new BN(sellAmount, 10)).send({from: account})
-      .on('transactionHash', (hash) => {
-        console.log(hash)
-        this.loading = true
-      })
-      .then((resp) => {
-        this.loading = false
-        console.log(resp)
-        return resp
-      })
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+    return this.relevantCoin.methods.sell(new BN(sellAmount, 10)).send({from: account})
   }
   transferOwnership (newOwner) {
     if (!this.account) return Promise.reject(new Error('Unlock Account'))
