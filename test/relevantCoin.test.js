@@ -26,12 +26,12 @@ contract('RelevantCoin', function (accounts) {
   }
 
 
-  it('should put totalSupply of RelevantCoin in the first account', async function () {
-    let balance = await instance.balanceOf.call(accounts[0]);
-    let totalSupply = await instance.totalSupply();
-    // console.log('balance ', balance.valueOf())
-    assert.equal(balance.valueOf(), totalSupply.valueOf(), 'totalSupply_ wasn\'t in the first account');
-  });
+  // it('should put totalSupply of RelevantCoin in the first account', async function () {
+  //   let balance = await instance.balanceOf.call(accounts[0]);
+  //   let totalSupply = await instance.totalSupply();
+  //   // console.log('balance ', balance.valueOf())
+  //   assert.equal(balance.valueOf(), totalSupply.valueOf(), 'totalSupply_ wasn\'t in the first account');
+  // });
 
   // it('should send coin correctly', async function() {
   //   const instance = await RelevantCoin.deployed()
@@ -55,24 +55,6 @@ contract('RelevantCoin', function (accounts) {
   //   assert.equal(endBalanceAcc1.toNumber(), startBalanceAcc1.toNumber() - amount, 'Amount wasn't correctly taken from the sender');
   //   assert.equal(endBalanceAcc2.toNumber(), startBalanceAcc2.toNumber() + amount, 'Amount wasn't correctly sent to the receiver');
   // });
-
-
-  it('should buy tokens correctly via default function', async () => {
-    let amount = 10;
-
-    const startBalance = await instance.balanceOf.call(accounts[0]);
-    let p = await getRequestParams(amount);
-    let buyTokens = await instance.send(Math.floor(p.price));
-    console.log('buyTokens via default gas', buyTokens.receipt.gasUsed);
-
-    // utils.logHelper(buyTokens.logs, 'LogBondingCurve');
-
-    const endBalance = await instance.balanceOf.call(accounts[0]);
-    let amountBought = endBalance.valueOf() /
-      (10 ** decimals) - startBalance.valueOf() /
-      (10 ** decimals);
-    assert.isAtMost(Math.abs(amountBought - amount), 1, 'able to buy tokens via fallback');
-  });
 
 
   // it('should call a function that depends on a linked library', function () {

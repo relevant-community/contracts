@@ -55,8 +55,8 @@ contract RelevantCoin is RelevantBondingCurve {
 
     // token params
     totalSupply_ = INITIAL_SUPPLY;
-    balances[owner] = INITIAL_SUPPLY;
-    Transfer(0x0, owner, INITIAL_SUPPLY);
+    // balances[owner] = INITIAL_SUPPLY;
+    // Transfer(0x0, owner, INITIAL_SUPPLY);
   }
 
 }

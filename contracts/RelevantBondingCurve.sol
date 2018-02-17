@@ -18,7 +18,7 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
   uint256 public virtualSupply;
   uint256 public virtualBalance;
   uint256 public inflationSupply;
-  uint256 public rewardPool;
+  uint256 public rewardPool = 0;
 
   function mintTokens(address _to) onlyOwner public returns (bool) {
     uint256 actualSupply = totalSupply_.sub(virtualSupply);
@@ -58,6 +58,8 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
   function sell(uint256 sellAmount) public validGasPrice returns(bool) {
     require(sellAmount > 0 && balances[msg.sender] >= sellAmount);
     uint256 tokenSupply = totalSupply_;
+    LogBondingCurve('sellAmount ', sellAmount);
+    LogBondingCurve('totalSupply ', tokenSupply.sub(virtualBalance));
     require(sellAmount <= tokenSupply.sub(virtualBalance));
     // compute sell ratio rounding?
     uint32 sellReserveRatio = uint32(reserveRatio * tokenSupply / (tokenSupply + inflationSupply));
