@@ -21,7 +21,7 @@ contract InflationaryToken is StandardToken, Ownable {
   }
 
   function mintTokens(address _to) onlyOwner public returns (bool) {
-    uint256 newTokens = computeInflation();
+    uint256 newTokens = computeInflation(totalSupply_);
     uint256 timeInt = timeInterval;
 
     // update last inflation calculation (rounding down to nearest timeInterval)
@@ -38,14 +38,13 @@ contract InflationaryToken is StandardToken, Ownable {
    * @dev Function to compute how many tokens should be minted
    * @return number of new tokens
    */
-  function computeInflation() public returns (uint256) {
+  function computeInflation(uint256 _tokenSupply) public returns (uint256) {
     // calculate infaltion only once per hour
 
     //optimizaiton
     uint256 infRate = inflationRatePerInterval;
     uint256 timeInt = timeInterval;
     uint256 currentTime = now;
-    uint256 totalSupply = totalSupply_;
 
     // compute the number of timeInterval elapsed since the last time we minted infation tokens
     uint256 intervalsSinceLastMint = currentTime / timeInt - lastInflationCalc / timeInt;
@@ -62,9 +61,9 @@ contract InflationaryToken is StandardToken, Ownable {
     }
     LogInflation("rate", rate);
 
-    uint256 previousSupply = totalSupply;
+    uint256 previousSupply = _tokenSupply;
     // update total supply
-    return totalSupply.mul(rate).div(10 ** 18).sub(previousSupply);
+    return _tokenSupply.mul(rate).div(10 ** 18).sub(previousSupply);
   }
 
 }

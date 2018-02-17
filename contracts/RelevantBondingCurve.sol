@@ -18,10 +18,11 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
   uint256 public virtualSupply;
   uint256 public virtualBalance;
   uint256 public inflationSupply;
-  uint256 public rewardPool;
+  uint256 public rewardPool = 0;
 
   function mintTokens(address _to) onlyOwner public returns (bool) {
-    uint256 newTokens = computeInflation();
+    uint256 actualSupply = totalSupply_.sub(virtualSupply);
+    uint256 newTokens = computeInflation(actualSupply);
     uint256 timeInt = timeInterval;
 
     // update last inflation calculation (rounding down to nearest timeInterval)
@@ -40,11 +41,7 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
    */
   function buy() public validGasPrice payable returns(bool) {
     require(msg.value > 0);
-    // compute sell supply
-    uint256 tokenSupply = virtualSupply + totalSupply_;
-    // compute balance
-    uint256 totalPoolBalance = poolBalance + virtualBalance;
-    uint256 tokensToMint = calculatePurchaseReturn(tokenSupply, totalPoolBalance, reserveRatio, msg.value);
+    uint256 tokensToMint = calculatePurchaseReturn(totalSupply_, poolBalance, reserveRatio, msg.value);
     totalSupply_ = totalSupply_.add(tokensToMint);
     balances[msg.sender] = balances[msg.sender].add(tokensToMint);
     poolBalance = poolBalance.add(msg.value);
@@ -59,13 +56,14 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
    * @return {bool}
    */
   function sell(uint256 sellAmount) public validGasPrice returns(bool) {
-    require(sellAmount > 0 && balances[msg.sender] >= sellAmount && sellAmount <= totalSupply_);
-    uint256 tokenSupply = virtualSupply + totalSupply_;
-    // compute sell supply
-    // rounding?
+    require(sellAmount > 0 && balances[msg.sender] >= sellAmount);
+    uint256 tokenSupply = totalSupply_;
+    LogBondingCurve('sellAmount ', sellAmount);
+    LogBondingCurve('totalSupply ', tokenSupply.sub(virtualBalance));
+    require(sellAmount <= tokenSupply.sub(virtualBalance));
+    // compute sell ratio rounding?
     uint32 sellReserveRatio = uint32(reserveRatio * tokenSupply / (tokenSupply + inflationSupply));
-    uint256 totalPoolBalance = poolBalance + virtualBalance;
-    uint256 ethAmount = calculateSaleReturn(tokenSupply, totalPoolBalance, sellReserveRatio, sellAmount);
+    uint256 ethAmount = calculateSaleReturn(tokenSupply, poolBalance, sellReserveRatio, sellAmount);
     msg.sender.transfer(ethAmount);
     poolBalance = poolBalance.sub(ethAmount);
     balances[msg.sender] = balances[msg.sender].sub(sellAmount);
