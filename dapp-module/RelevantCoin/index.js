@@ -3,7 +3,7 @@ const RelevantCoinArtifacts = require('../../build/contracts/RelevantCoin.json')
 
 const Web3 = require('web3')
 const BN = require('bignumber.js')
-const MicroEvent = require("microevent");
+// const MicroEvent = require("microevent");
 
 class RelevantCoin {
   constructor (options) {
@@ -483,6 +483,6 @@ class RelevantCoin {
 
 
 }
-MicroEvent.mixin(RelevantCoin);
+// MicroEvent.mixin(RelevantCoin);
 
 module.exports = RelevantCoin
