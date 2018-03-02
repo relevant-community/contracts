@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "npm-watch": "^0.3.0",
+    "truffle-hdwallet-provider": "0.0.3",
     "zeppelin-solidity": "1.6.0"
   },
   "watch": {
