@@ -1,19 +1,19 @@
 
-const BondingCurveMock = artifacts.require('../contracts/mocks/RelevantBondingCurveMock.sol');
+const RelevantBondingCurveMock = artifacts.require('../contracts/mocks/RelevantBondingCurveMock.sol');
 const utils = require('../utils');
 
-contract('BondingCurveUniversal', accounts => {
+contract('RelevantBondingCurve', accounts => {
   let instance;
   const decimals = 18;
   const startSupply = 1000000 * (10 ** 18);
   const startPoolBalance = 2 * (10 ** 16);
-  const reserveRatio = Math.round(.15 * 1000000) / 1000000;
+  const reserveRatio = Math.round(0.15 * 1000000) / 1000000;
   const solRatio = Math.floor(reserveRatio * 1000000);
   // const gasPriceBad = 22 * 10 ** 18 + 1;
   const hours = 24;
 
   before(async () => {
-    instance = await BondingCurveMock.new(startSupply, startPoolBalance, solRatio, hours);
+    instance = await RelevantBondingCurveMock.new(startSupply, startPoolBalance, solRatio, hours);
   });
 
   async function getRequestParams(amount) {
@@ -46,7 +46,6 @@ contract('BondingCurveUniversal', accounts => {
   });
 
   it('should create tokens via inflation', async () => {
-
     let p = await getRequestParams();
     let virtualSupply = await instance.virtualSupply.call();
     let actualSupply = p.supply - virtualSupply.toNumber();
@@ -74,18 +73,18 @@ contract('BondingCurveUniversal', accounts => {
 
     let p = await getRequestParams(amount);
     let sellRatio = solRatio * p.supply / (p.supply + inflationSupply);
-    sellRatio = Math.floor(sellRatio);
-    let sellPoolBalance = sellRatio * p.poolBalance / solRatio;
-    sellPoolBalance = Math.floor(sellPoolBalance);
+    // sell Ratio should use ceil instead of floor because its used as inverse power
+    // and could result in more ETH returned as a result of rounding error
+    sellRatio = Math.ceil(sellRatio);
 
     let saleReturn = await instance.calculateSaleReturn.call(
-      p.supply,
-      sellPoolBalance,
+      p.supply + inflationSupply,
+      p.poolBalance,
       sellRatio,
       amount
     );
 
-    let sell = await instance.sell(amount.valueOf());
+    let sell = await instance.sell(amount);
     console.log('sellTokens gas ', sell.receipt.gasUsed);
     // utils.logHelper(sell.logs, 'LogBondingCurve');
 
