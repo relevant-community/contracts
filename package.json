@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "test": "truffle test",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "coverage": "./node_modules/.bin/solidity-coverage"
   },
   "dependencies": {
     "npm-watch": "^0.3.0",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "eslint": "^4.17.0",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.8.0"
+    "eslint-plugin-import": "^2.8.0",
+    "solidity-coverage": "^0.4.11"
   }
 }

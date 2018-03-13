@@ -34,6 +34,7 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
     lastInflationCalc = (now / timeInt) * timeInt;
 
     LogInflation("newTokens", newTokens);
+    // QUESTION - what is more consistent - update totalSupply and adjust buy supply?
     inflationSupply = inflationSupply.add(newTokens);
     rewardPool = rewardPool.add(newTokens);
     return true;
@@ -47,9 +48,9 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
   function buy() public validGasPrice payable returns(bool) {
     require(msg.value > 0);
     uint256 tokensToMint = calculatePurchaseReturn(totalSupply_, poolBalance, reserveRatio, msg.value);
+    // QUESTION - what is more consistent - update totalSupply and adjust buy supply?
     totalSupply_ = totalSupply_.add(tokensToMint);
     balances[msg.sender] = balances[msg.sender].add(tokensToMint);
-    // TODO use inflationSupply tokens to move price instead of minting new ones
     poolBalance = poolBalance.add(msg.value);
     LogMint(tokensToMint, msg.value);
     return true;
@@ -78,6 +79,7 @@ contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
     uint256 sellReserveRatio246 = reserveRatio * tokenSupply * (10 ** 18) / (tokenSupply + inflationSupply);
     uint32 sellReserveRatio = uint32(((sellReserveRatio246 + (10 ** 18) - 1) / (10 ** 18)));
 
+    // QUESTION - what is more consistent - update totalSupply and adjust buy supply?
     uint256 ethAmount = calculateSaleReturn(tokenSupply + inflationSupply, poolBalance, sellReserveRatio, sellAmount);
     msg.sender.transfer(ethAmount);
     poolBalance = poolBalance.sub(ethAmount);
