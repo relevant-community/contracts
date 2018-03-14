@@ -3,11 +3,14 @@ pragma solidity ^0.4.18;
 import "../InflationaryToken.sol";
 
 contract InflationaryTokenMock is InflationaryToken {
-  function InflationaryTokenMock(uint hoursElapsed) public {
-    inflationRatePerInterval = 1000010880216701200; // 10% annual
+  function InflationaryTokenMock(
+    uint256 hoursElapsed,
+    uint256 _totalSupply,
+    uint256 _inflationRatePerInterval) public {
+    inflationRatePerInterval = _inflationRatePerInterval;
     timeInterval = 1 hours;
     lastInflationCalc = now - hoursElapsed * 1 hours;
-    totalSupply_ = 1000 * (10 ** 18);
+    totalSupply_ = _totalSupply;
     balances[msg.sender] = totalSupply_;
   }
 }

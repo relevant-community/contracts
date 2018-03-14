@@ -5,5 +5,11 @@ module.exports = {
     // norpc: true,
     // dir: './secretDirectory',
     copyPackages: ['zeppelin-solidity'],
-    // skipFiles: ['Routers/EtherRouter.sol']
+    skipFiles: [
+      'BancorFormula.sol',
+      'ConvertLib.sol',
+      'Utils.sol',
+      'mocks',
+      'interfaces'
+    ]
 };
