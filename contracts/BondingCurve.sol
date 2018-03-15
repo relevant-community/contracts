@@ -46,6 +46,7 @@ contract BondingCurve is StandardToken, BancorFormula, Ownable {
    * @dev buy tokens
    * gas cost 77508
    * @return {bool}
+   * TODO implement maxAmount that helps prevent miner front-running
    */
   function buy() public validGasPrice payable returns(bool) {
     require(msg.value > 0);
