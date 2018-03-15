@@ -1,8 +1,8 @@
 
-const BondingCurveMock = artifacts.require('../contracts/mocks/BondingCurveUniversalMock.sol');
+const BondingCurveMock = artifacts.require('../contracts/mocks/BondingCurveMock.sol');
 const utils = require('../utils');
 
-contract('BondingCurveUniversal', accounts => {
+contract('BondingCurve', accounts => {
   let instance;
   const decimals = 18;
   const startSupply = 10 * 10 ** 18; // 1

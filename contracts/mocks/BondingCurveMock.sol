@@ -1,9 +1,9 @@
 pragma solidity ^0.4.18;
 
-import "../BondingCurveUniversal.sol";
+import "../BondingCurve.sol";
 
-contract BondingCurveUniversalMock is BondingCurveUniversal{
-  function BondingCurveUniversalMock(
+contract BondingCurveMock is BondingCurve{
+  function BondingCurveMock(
     uint256 _totalSupply,
     uint256 _poolBalance,
     uint32 _reserveRatio) public {

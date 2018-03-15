@@ -4,7 +4,7 @@ import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./BancorFormula.sol";
 import "./InflationaryToken.sol";
-import "./BondingCurveUniversal.sol";
+import "./BondingCurve.sol";
 
 /**
  * @title Relevant Bonding Curve
@@ -13,7 +13,7 @@ import "./BondingCurveUniversal.sol";
  * https://github.com/bancorprotocol/contracts
  * https://github.com/ConsenSys/curationmarkets/blob/master/CurationMarkets.sol
  */
-contract RelevantBondingCurve is BondingCurveUniversal, InflationaryToken {
+contract RelevantBondingCurve is BondingCurve, InflationaryToken {
   uint256 public virtualSupply;
   uint256 public virtualBalance;
   uint256 public inflationSupply;

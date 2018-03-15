@@ -5,14 +5,13 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./BancorFormula.sol";
 
 /**
- * @title Universal Bonding Curve
- * @dev Bonding curve contract based on bacor formula
+ * @title Bonding Curve
+ * @dev Bonding curve contract based on Bacor formula
  * inspired by bancor protocol and simondlr
  * https://github.com/bancorprotocol/contracts
  * https://github.com/ConsenSys/curationmarkets/blob/master/CurationMarkets.sol
- * uses bancor formula
  */
-contract BondingCurveUniversal is StandardToken, BancorFormula, Ownable {
+contract BondingCurve is StandardToken, BancorFormula, Ownable {
   uint256 public poolBalance;
 
   /*
