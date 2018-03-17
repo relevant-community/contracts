@@ -1,3 +1,5 @@
+import assertRevert from './helpers/assertRevert';
+import expectThrow from './helpers/expectThrow';
 
 const BondingCurveMock = artifacts.require('../contracts/mocks/BondingCurveMock.sol');
 const utils = require('../utils');
@@ -9,10 +11,14 @@ contract('BondingCurve', accounts => {
   const startPoolBalance = 10 ** 14; // one coin costs .0001 ether;
   const reserveRatio = Math.round(1 / 3 * 1000000) / 1000000;
   const solRatio = Math.floor(reserveRatio * 1000000);
-  const gasPriceBad = 22 * 10 ** 18 + 1;
+  let gasPrice = 19 * (10 ** 9);
+  // const gasPriceBad = gasPrice + 1 / web3.eth.gasPrice.toNumber();
+
+  // console.log('gasPriceBad ', gasPriceBad);
+  // console.log('current gas price ', web3.eth.gasPrice);
 
   before(async () => {
-    instance = await BondingCurveMock.new(startSupply, startPoolBalance, solRatio);
+    instance = await BondingCurveMock.new(startSupply, startPoolBalance, solRatio, gasPrice);
   });
 
   async function getRequestParams(amount) {
@@ -118,7 +124,16 @@ contract('BondingCurve', accounts => {
     assert.isAtMost(Math.abs(endBalance.valueOf() - (amount - sellAmount)), 10 ** 17, 'balance should be correct');
   });
 
-  // TODO test that correct amount gets sent back
+  it('should not be able to buy anything with 0 ETH', async () => {
+    await assertRevert(instance.buy({ value: 0 }));
+  });
+
+  it('should not be able to sell more than what you have', async () => {
+    let amount = await instance.balanceOf(accounts[0]);
+    await assertRevert(instance.sell(amount.plus(1)));
+  });
+
+
   it('should be able to sell all', async () => {
     let amount = await instance.balanceOf(accounts[0]);
 
@@ -132,7 +147,7 @@ contract('BondingCurve', accounts => {
       amount
     );
 
-    let sell = await instance.sell(amount.valueOf());
+    let sell = await instance.sell(amount);
     console.log('sellTokens gas ', sell.receipt.gasUsed);
     // utils.logHelper(sell.logs, 'LogBondingCurve');
 
@@ -143,14 +158,19 @@ contract('BondingCurve', accounts => {
     assert.equal(endBalance.valueOf(), 0, 'balance should be 0 tokens');
   });
 
-  it('should throw when attempting to buy with gas price higher than the universal limit', async () => {
-    try {
-      await instance.buy({ gasPrice: gasPriceBad, value: 10 ** 18 });
-      assert(false, "didn't throw");
-    } catch (error) {
-      return utils.ensureException(error);
-    }
-    return true;
+  it('should not be able to set gas price of 0', async function () {
+    await assertRevert(instance.setGasPrice.call(0));
+  });
+
+  it('should be able to set max gas price', async function () {
+    // let owner = accounts[0];
+    await instance.setGasPrice(1, { from: accounts[0] });
+    gasPrice = await instance.gasPrice.call();
+    assert.equal(1, gasPrice.valueOf(), 'gas price should update');
+  });
+
+  it('should throw an error when attempting to buy with gas price higher than the universal limit', async () => {
+    await expectThrow(instance.buy({ gasPrice: gasPrice + 1, value: 10 ** 18 }));
   });
 });
 

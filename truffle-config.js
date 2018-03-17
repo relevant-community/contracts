@@ -13,7 +13,10 @@ module.exports = {
       host: 'localhost',
       port: 7545,
       network_id: '*', // Match any network id
-      gasPrice: 21000000000,
+      // gas: 0xfffffffffff,
+      gasPrice: 23000000000,
+      // gas: 0xfffffffffff, // <-- Use this high gas value
+      gasPrice: 0x01     // <-- Use this low gas price
       // provider: function() {
       //   return new HDWalletProvider(secrets.truffle, 'http://localhost:7545/')
       // },

@@ -6,11 +6,12 @@ contract BondingCurveMock is BondingCurve{
   function BondingCurveMock(
     uint256 _totalSupply,
     uint256 _poolBalance,
-    uint32 _reserveRatio) public {
+    uint32 _reserveRatio,
+    uint256 _gasPrice) public {
 
     reserveRatio = _reserveRatio;
     totalSupply_ = _totalSupply;
     poolBalance = _poolBalance;
-    gasPrice = 26 * (10 ** 9);
+    gasPrice = _gasPrice;
   }
 }

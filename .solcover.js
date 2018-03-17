@@ -6,9 +6,8 @@ module.exports = {
     // dir: './secretDirectory',
     copyPackages: ['zeppelin-solidity'],
     skipFiles: [
-      'BancorFormula.sol',
+      // 'BancorFormula.sol',
       'ConvertLib.sol',
-      'Utils.sol',
       'mocks',
       'interfaces'
     ]

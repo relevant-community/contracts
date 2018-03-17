@@ -45,10 +45,9 @@ contract BondingCurve is StandardToken, BancorFormula, Ownable {
   /**
    * @dev buy tokens
    * gas cost 77508
-   * @return {bool}
    * TODO implement maxAmount that helps prevent miner front-running
    */
-  function buy() public validGasPrice payable returns(bool) {
+  function buy() validGasPrice public payable returns(bool) {
     require(msg.value > 0);
     uint256 tokensToMint = calculatePurchaseReturn(totalSupply_, poolBalance, reserveRatio, msg.value);
     totalSupply_ = totalSupply_.add(tokensToMint);
@@ -59,12 +58,12 @@ contract BondingCurve is StandardToken, BancorFormula, Ownable {
   }
 
   /**
-   * @dev sell tokens
-   * gase cost 86454
-   * @param sellAmount amount of tokens to withdraw
-   * @return {bool}
+   * @dev Sell tokens
+   * gas cost 86454
+   * @param sellAmount Amount of tokens to withdraw
+   * TODO implement maxAmount that helps prevent miner front-running
    */
-  function sell(uint256 sellAmount) public validGasPrice returns(bool) {
+  function sell(uint256 sellAmount) validGasPrice public returns(bool) {
     require(sellAmount > 0 && balances[msg.sender] >= sellAmount);
     uint256 ethAmount = calculateSaleReturn(totalSupply_, poolBalance, reserveRatio, sellAmount);
     msg.sender.transfer(ethAmount);
@@ -82,10 +81,10 @@ contract BondingCurve is StandardToken, BancorFormula, Ownable {
   }
 
   /**
-      @dev allows the owner to update the gas price limit
-      @param _gasPrice    new gas price limit
+    @dev Allows the owner to update the gas price limit
+    @param _gasPrice The new gas price limit
   */
-  function setGasPrice(uint256 _gasPrice) public onlyOwner {
+  function setGasPrice(uint256 _gasPrice) onlyOwner public {
     require(_gasPrice > 0);
     gasPrice = _gasPrice;
   }

@@ -1,12 +1,15 @@
-pragma solidity ^0.4.11;
-import './Utils.sol';
-import './interfaces/IBancorFormula.sol';
+pragma solidity ^0.4.18;
+// import './Utils.sol';
+// import './interfaces/IBancorFormula.sol';
+import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
 /**
  * bancor formula by bancor
  * https://github.com/bancorprotocol/contracts
  */
-contract BancorFormula is IBancorFormula, Utils {
+contract BancorFormula {
+    using SafeMath for uint256;
+
     string public version = '0.3';
 
     uint256 private constant ONE = 1;
@@ -190,13 +193,13 @@ contract BancorFormula is IBancorFormula, Utils {
 
         // special case if the weight = 100%
         if (_connectorWeight == MAX_WEIGHT)
-            return safeMul(_supply, _depositAmount) / _connectorBalance;
+            return _supply.mul(_depositAmount).div(_connectorBalance);
 
         uint256 result;
         uint8 precision;
-        uint256 baseN = safeAdd(_depositAmount, _connectorBalance);
+        uint256 baseN = _depositAmount.add(_connectorBalance);
         (result, precision) = power(baseN, _connectorBalance, _connectorWeight, MAX_WEIGHT);
-        uint256 temp = safeMul(_supply, result) >> precision;
+        uint256 temp = _supply.mul(result) >> precision;
         return temp - _supply;
      }
 
@@ -228,15 +231,15 @@ contract BancorFormula is IBancorFormula, Utils {
 
         // special case if the weight = 100%
         if (_connectorWeight == MAX_WEIGHT)
-            return safeMul(_connectorBalance, _sellAmount) / _supply;
+            return _connectorBalance.mul(_sellAmount).div(_supply);
 
         uint256 result;
         uint8 precision;
         uint256 baseD = _supply - _sellAmount;
         (result, precision) = power(_supply, baseD, MAX_WEIGHT, _connectorWeight);
-        uint256 temp1 = safeMul(_connectorBalance, result);
+        uint256 temp1 = _connectorBalance.mul(result);
         uint256 temp2 = _connectorBalance << precision;
-        return (temp1 - temp2) / result;
+        return temp1.sub(temp2).div(result);
     }
 
     /**
