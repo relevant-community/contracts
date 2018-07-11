@@ -3,7 +3,6 @@ require('babel-register');
 require('babel-polyfill');
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
-const secrets = require('./secrets.js');
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -16,7 +15,7 @@ module.exports = {
       // gas: 0xfffffffffff,
       gasPrice: 23000000000,
       // gas: 0xfffffffffff, // <-- Use this high gas value
-      gasPrice: 0x01     // <-- Use this low gas price
+      gasPrice: 0x01 // <-- Use this low gas price
       // provider: function() {
       //   return new HDWalletProvider(secrets.truffle, 'http://localhost:7545/')
       // },
@@ -26,9 +25,9 @@ module.exports = {
     coverage: {
       host: 'localhost',
       network_id: '*',
-      port: 8555,         // <-- If you change this, also set the port option in .solcover.js.
+      port: 8555, // <-- If you change this, also set the port option in .solcover.js.
       gas: 0xfffffffffff, // <-- Use this high gas value
-      gasPrice: 0x01     // <-- Use this low gas price
+      gasPrice: 0x01 // <-- Use this low gas price
     },
     // testrpc: {
     //   host: 'localhost',
@@ -36,36 +35,37 @@ module.exports = {
     //   network_id: '*', // eslint-disable-line camelcase
     // },
     kovan: {
-      provider: function () {
-        return new HDWalletProvider(secrets.mnemonic, 'https://kovan.infura.io/' + secrets.infura, 1);
+      provider() {
+        return new HDWalletProvider(process.env.MNEMONIC, 'https://kovan.infura.io/' + process.env.INFURA_API_KEY, 1);
       },
       network_id: 42,
       gas: 5561260
     },
     rinkeby: {
-      provider: function () {
-        return new HDWalletProvider(secrets.mnemonic, 'https://rinkeby.infura.io/' + secrets.infura);
+      provider() {
+        return new HDWalletProvider(process.env.MNEMONIC, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY);
       },
       network_id: 4,
-      gas: 4700000
+      gas: 7.2e6,
+      gasPrice: 2e10
     },
     ropsten: {
-      provider: function () {
-        return new HDWalletProvider(secrets.mnemonic, 'https://ropsten.infura.io/' + secrets.infura);
+      provider() {
+        return new HDWalletProvider(process.env.MNEMONIC, 'https://ropsten.infura.io/' + process.env.INFURA_API_KEY);
       },
       network_id: 2,
       gas: 5561260
     },
     sokol: {
-      provider: function () {
-        return new HDWalletProvider(secrets.mnemonic, 'https://sokol.poa.network');
+      provider() {
+        return new HDWalletProvider(process.env.MNEMONIC, 'https://sokol.poa.network');
       },
       gasPrice: 1000000000,
       network_id: 77
     },
     poa: {
-      provider: function () {
-        return new HDWalletProvider(secrets.mnemonic, 'https://core.poa.network')
+      provider() {
+        return new HDWalletProvider(process.env.MNEMONIC, 'https://core.poa.network');
       },
       gasPrice: 1000000000,
       network_id: 99

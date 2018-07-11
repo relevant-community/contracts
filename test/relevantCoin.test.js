@@ -25,13 +25,7 @@ contract('RelevantCoin', function (accounts) {
     };
   }
 
-
-  // it('should put totalSupply of RelevantCoin in the first account', async function () {
-  //   let balance = await instance.balanceOf.call(accounts[0]);
-  //   let totalSupply = await instance.totalSupply();
-  //   // console.log('balance ', balance.valueOf())
-  //   assert.equal(balance.valueOf(), totalSupply.valueOf(), 'totalSupply_ wasn\'t in the first account');
-  // });
+  
 
   // it('should send coin correctly', async function() {
   //   const instance = await RelevantCoin.deployed()
@@ -56,23 +50,5 @@ contract('RelevantCoin', function (accounts) {
   //   assert.equal(endBalanceAcc2.toNumber(), startBalanceAcc2.toNumber() + amount, 'Amount wasn't correctly sent to the receiver');
   // });
 
-
-  // it('should call a function that depends on a linked library', function () {
-  //   let meta;
-  //   let RelevantCoinBalance;
-  //   let RelevantCoinEthBalance;
-
-  //   return RelevantCoin.deployed().then(function (instance) {
-  //     meta = instance;
-  //     return meta.balanceOf.call(accounts[0]);
-  //   }).then(function (outCoinBalance) {
-  //     RelevantCoinBalance = outCoinBalance.toNumber();
-  //     return meta.getBalanceInEth.call(accounts[0]);
-  //   }).then(function (outCoinBalanceEth) {
-  //     RelevantCoinEthBalance = outCoinBalanceEth.toNumber();
-  //   }).then(function () {
-  //     assert.equal(RelevantCoinEthBalance, 2 * RelevantCoinBalance, 'Library function returned unexpected function, linkage may be broken');
-  //   });
-  // });
 });
 

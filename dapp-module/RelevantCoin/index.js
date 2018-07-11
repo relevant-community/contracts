@@ -1,23 +1,21 @@
 
-const RelevantCoinArtifacts = require('../../build/contracts/RelevantCoin.json')
+const RelevantCoinArtifacts = require('../../build/contracts/RelevantCoin.json');
 
-const Web3 = require('web3')
-const BN = require('bignumber.js')
-// const MicroEvent = require("microevent");
+const Web3 = require('web3');
+const BN = require('bignumber.js');
 
 class RelevantCoin {
-  constructor (options) {
+  constructor(options) {
+    this.relevantCoin = null;
 
-    this.relevantCoin = null
+    this.pollingInterval = null;
+    this.account = null;
+    this.unlocked = false;
+    this.balanceWei = 0;
+    this.balance = 0;
 
-    this.pollingInterval = null
-    this.account = null
-    this.unlocked = false
-    this.balanceWei = 0
-    this.balance = 0
-
-    this.genesisBlock = 0
-    this.loading = false
+    this.genesisBlock = 0;
+    this.loading = false;
     this.options = {
       address: 'REPLACE_WITH_CONTRACT_ADDRESS',
       readonlyRpcURL: 'https://mainnet.infura.io',
@@ -25,13 +23,13 @@ class RelevantCoin {
       getPastEvents: false,
       watchFutureEvents: false,
       connectionRetries: 3
-    }
-    Object.assign(this.options, options)
+    };
+    Object.assign(this.options, options);
   }
 
   // hello world : )
-  helloWorld () {
-    console.log('hello world!')
+  helloWorld() {
+    console.log('hello world!');
   }
 
   /*
@@ -39,34 +37,32 @@ class RelevantCoin {
    */
 
 
-  deployContract () {
-    if (!this.options.address || this.options.address === 'REPLACE_WITH_CONTRACT_ADDRESS') return new Error('Please provide a contract address')
-    this.relevantCoin = new global.web3.eth.Contract(RelevantCoinArtifacts.abi, this.options.address)
+  deployContract() {
+    if (!this.options.address || this.options.address === 'REPLACE_WITH_CONTRACT_ADDRESS') return new Error('Please provide a contract address');
+    this.relevantCoin = new global.web3.eth.Contract(RelevantCoinArtifacts.abi, this.options.address);
   }
 
   /*
    * Not Yet Implemented vvvv
    */
 
-  getGenesisBlock () {
+  getGenesisBlock() {
     return new Promise((resolve, reject) => {
-      resolve()
-    })
+      resolve();
+    });
   }
 
-  getPastEvents () {
+  getPastEvents() {
     return new Promise((resolve, reject) => {
-      resolve()
-    })
+      resolve();
+    });
   }
 
-  watchFutureEvents () {
+  watchFutureEvents() {
     return new Promise((resolve, reject) => {
-      resolve()
-    })
+      resolve();
+    });
   }
-
-
 
 
   /*
@@ -75,243 +71,233 @@ class RelevantCoin {
    *
    */
 
-  name () {
+  name() {
     return this.relevantCoin.methods.name().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  inflationSupply () {
+  inflationSupply() {
     return this.relevantCoin.methods.inflationSupply().call()
-    .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+      .then((resp) => {
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  reserveRatio () {
+  reserveRatio() {
     return this.relevantCoin.methods.reserveRatio().call()
-    .then((resp) => {
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+      .then((resp) => resp).catch((err) => {
+        console.error(err);
+      });
   }
-  totalSupply () {
+  totalSupply() {
     return this.relevantCoin.methods.totalSupply().call()
-    .then((resp) => {
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+      .then((resp) => resp).catch((err) => {
+        console.error(err);
+      });
   }
-  INITAL_BALANCE () {
+  INITAL_BALANCE() {
     return this.relevantCoin.methods.INITAL_BALANCE().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  virtualSupply () {
+  virtualSupply() {
     return this.relevantCoin.methods.virtualSupply().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  calculatePurchaseReturn (_supply, _connectorBalance, _connectorWeight, _depositAmount) {
+  calculatePurchaseReturn(_supply, _connectorBalance, _connectorWeight, _depositAmount) {
     return this.relevantCoin.methods.calculatePurchaseReturn(new BN(_supply, 10), new BN(_connectorBalance, 10), new BN(_connectorWeight, 10), new BN(_depositAmount, 10)).call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  INITIAL_SUPPLY () {
+  INITIAL_SUPPLY() {
     return this.relevantCoin.methods.INITIAL_SUPPLY().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  decimals () {
+  decimals() {
     return this.relevantCoin.methods.decimals().call()
-    .then((resp) => {
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+      .then((resp) => resp).catch((err) => {
+        console.error(err);
+      });
   }
-  calculateSaleReturn (_supply, _connectorBalance, _connectorWeight, _sellAmount) {
+  calculateSaleReturn(_supply, _connectorBalance, _connectorWeight, _sellAmount) {
     return this.relevantCoin.methods.calculateSaleReturn(new BN(_supply, 10), new BN(_connectorBalance, 10), new BN(_connectorWeight, 10), new BN(_sellAmount, 10)).call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  version () {
+  version() {
     return this.relevantCoin.methods.version().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  rewardPool () {
+  rewardPool() {
     return this.relevantCoin.methods.rewardPool().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  intervalsSinceLastInflationUpdate () {
+  intervalsSinceLastInflationUpdate() {
     return this.relevantCoin.methods.intervalsSinceLastInflationUpdate().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  balanceOf (_owner) {
+  balanceOf(_owner) {
     return this.relevantCoin.methods.balanceOf(_owner).call()
-    .then((resp) => {
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+      .then((resp) => resp).catch((err) => {
+        console.error(err);
+      });
   }
-  INITIAL_PRICE () {
+  INITIAL_PRICE() {
     return this.relevantCoin.methods.INITIAL_PRICE().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  owner () {
+  owner() {
     return this.relevantCoin.methods.owner().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  timeInterval () {
+  timeInterval() {
     return this.relevantCoin.methods.timeInterval().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  symbol () {
+  symbol() {
     return this.relevantCoin.methods.symbol().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  poolBalance () {
+  poolBalance() {
     return this.relevantCoin.methods.poolBalance().call()
-      .then((resp) => {
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+      .then((resp) => resp).catch((err) => {
+        console.error(err);
+      });
   }
-  HOURLY_INFLATION () {
+  HOURLY_INFLATION() {
     return this.relevantCoin.methods.HOURLY_INFLATION().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  inflationRatePerInterval () {
+  inflationRatePerInterval() {
     return this.relevantCoin.methods.inflationRatePerInterval().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  CURVE_RATIO () {
+  CURVE_RATIO() {
     return this.relevantCoin.methods.CURVE_RATIO().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  virtualBalance () {
+  virtualBalance() {
     return this.relevantCoin.methods.virtualBalance().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  allowance (_owner, _spender) {
+  allowance(_owner, _spender) {
     return this.relevantCoin.methods.allowance(_owner, _spender).call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  TIME_INTERVAL () {
+  TIME_INTERVAL() {
     return this.relevantCoin.methods.TIME_INTERVAL().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  gasPrice () {
+  gasPrice() {
     return this.relevantCoin.methods.gasPrice().call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
-  getBalanceInEth (addr) {
+  getBalanceInEth(addr) {
     return this.relevantCoin.methods.getBalanceInEth(addr).call()
       .then((resp) => {
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      console.error(err)
-    })
+        console.log(resp);
+        return resp;
+      }).catch((err) => {
+        console.error(err);
+      });
   }
 
   /*
@@ -320,159 +306,168 @@ class RelevantCoin {
    *
    */
 
-  approve (_spender, _value) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.approve(_spender, new BN(_value, 10)).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  approve(_spender, _value) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.approve(_spender, new BN(_value, 10)).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  transferFrom (_from, _to, _value) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.transferFrom(_from, _to, new BN(_value, 10)).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  transferFrom(_from, _to, _value) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.transferFrom(_from, _to, new BN(_value, 10)).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  computeInflation () {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.computeInflation().send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  computeInflation() {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.computeInflation().send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  decreaseApproval (_spender, _subtractedValue) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.decreaseApproval(_spender, new BN(_subtractedValue, 10)).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  decreaseApproval(_spender, _subtractedValue) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.decreaseApproval(_spender, new BN(_subtractedValue, 10)).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  transfer (_to, _value) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.transfer(_to, new BN(_value, 10)).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  transfer(_to, _value) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.transfer(_to, new BN(_value, 10)).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  mintTokens (_to) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.mintTokens(_to).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  mintTokens(_to) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.mintTokens(_to).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  setGasPrice (_gasPrice) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.setGasPrice(new BN(_gasPrice, 10)).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  setGasPrice(_gasPrice) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.setGasPrice(new BN(_gasPrice, 10)).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  increaseApproval (_spender, _addedValue) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.increaseApproval(_spender, new BN(_addedValue, 10)).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  increaseApproval(_spender, _addedValue) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.increaseApproval(_spender, new BN(_addedValue, 10)).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
-  buy (buyAmount, account) {
-    if (!account) return Promise.reject(new Error('Unlock Account'))
-    buyAmount = Web3.utils.toWei(buyAmount)
+  buy(buyAmount, account) {
+    if (!account) return Promise.reject(new Error('Unlock Account'));
+    buyAmount = Web3.utils.toWei(buyAmount);
 
-    return this.relevantCoin.methods.buy().send({from: account, value: new BN(buyAmount, 10).toString(10)})
+    return this.relevantCoin.methods.buy().send({ from: account, value: new BN(buyAmount, 10).toString(10) });
   }
-  sell (sellAmount, account) {
-    if (!account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.sell(new BN(sellAmount, 10)).send({from: account})
+  sell(sellAmount, account) {
+    if (!account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.sell(new BN(sellAmount, 10)).send({ from: account });
   }
-  transferOwnership (newOwner) {
-    if (!this.account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.transferOwnership(newOwner).send({from: this.account})
-    .on('transactionHash', (hash) => {
-      console.log(hash)
-      this.loading = true
-    })
+  transferOwnership(newOwner) {
+    if (!this.account) return Promise.reject(new Error('Unlock Account'));
+    return this.relevantCoin.methods.transferOwnership(newOwner).send({ from: this.account })
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+        this.loading = true;
+      })
       .then((resp) => {
-      this.loading = false
-      console.log(resp)
-      return resp
-    }).catch((err) => {
-      this.loading = false
-      console.error(err)
-    })
+        this.loading = false;
+        console.log(resp);
+        return resp;
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.error(err);
+      });
   }
 
   /*
@@ -480,9 +475,7 @@ class RelevantCoin {
    * Events
    *
    */
-
-
 }
 // MicroEvent.mixin(RelevantCoin);
 
-module.exports = RelevantCoin
+module.exports = RelevantCoin;

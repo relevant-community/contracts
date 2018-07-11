@@ -1,16 +1,17 @@
 /* global artifacts, contract, it, before, assert, web3 */
 /* eslint-disable prefer-reflect, no-loop-func */
 
-let constants = require('./helpers/FormulaConstants');
+let constants = require('./helpers/PowerFormulaConstants');
 
-let TestBancorFormula = artifacts.require('./mocks/TestBancorFormula.sol');
+let PowerMock = artifacts.require('./mocks/PowerMock.sol');
 
 let formula;
 
-contract('BancorFormula', () => {
-  // return;
+contract('PowerMock', () => {
+  return;
+
   before(async () => {
-    formula = await TestBancorFormula.new();
+    formula = await PowerMock.new();
   });
 
   let ILLEGAL_VALUE = web3.toBigNumber(2).toPower(256);

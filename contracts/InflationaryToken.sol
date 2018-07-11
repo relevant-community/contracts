@@ -16,10 +16,13 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  */
 contract InflationaryToken is StandardToken, Ownable {
 
-  uint256 internal lastInflationCalc;
+  uint256 public lastInflationCalc;
   // inflationRatePerInterval should be multiplied by 1e18
   uint256 public inflationRatePerInterval;
   uint256 public timeInterval;
+
+  // added precision
+  uint256 precision = 34;
 
   event LogInflation(string logString, uint256 value);
 
@@ -53,7 +56,7 @@ contract InflationaryToken is StandardToken, Ownable {
    * @param _tokenSupply The token supply to be used for inflation calculation
    * @return A uint256 specifying number of new tokens to mint
    */
-  function computeInflation(uint256 _tokenSupply) public returns (uint256) {
+  function computeInflation(uint256 _tokenSupply) public view returns (uint256) {
     // calculate inflation only once per hour
 
     // optimization
@@ -68,12 +71,13 @@ contract InflationaryToken is StandardToken, Ownable {
     require(intervalsSinceLastMint > 0);
 
     // our hourly inflation rate
-    uint256 rate = infRate;
+    uint256 rate = infRate; // << precision;
 
     // compute inflation for total timeIntervals elapsed
     for (uint256 i = 1; i < intervalsSinceLastMint; i++) {
-      rate = rate.mul(infRate) / (10 ** 18);
+      rate = rate.mul(infRate).div(10 ** 18);
     }
+    // rate = rate >> precision;
     // update total supply
     return _tokenSupply.mul(rate).div(10 ** 18).sub(_tokenSupply);
   }

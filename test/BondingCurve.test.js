@@ -2,7 +2,6 @@ import assertRevert from './helpers/assertRevert';
 import expectThrow from './helpers/expectThrow';
 
 const BondingCurveMock = artifacts.require('../contracts/mocks/BondingCurveMock.sol');
-const utils = require('../utils');
 
 contract('BondingCurve', accounts => {
   let instance;
@@ -12,10 +11,6 @@ contract('BondingCurve', accounts => {
   const reserveRatio = Math.round(1 / 3 * 1000000) / 1000000;
   const solRatio = Math.floor(reserveRatio * 1000000);
   let gasPrice = 19 * (10 ** 9);
-  // const gasPriceBad = gasPrice + 1 / web3.eth.gasPrice.toNumber();
-
-  // console.log('gasPriceBad ', gasPriceBad);
-  // console.log('current gas price ', web3.eth.gasPrice);
 
   before(async () => {
     instance = await BondingCurveMock.new(startSupply, startPoolBalance, solRatio, gasPrice);
@@ -27,14 +22,14 @@ contract('BondingCurve', accounts => {
     let poolBalance = await instance.poolBalance.call();
     poolBalance = poolBalance.valueOf();
 
-    let price = poolBalance * ((1 + amount * (10 ** 18) / supply) ** (1 / (reserveRatio)) - 1);
+    let price = poolBalance * ((1 + amount / supply) ** (1 / (reserveRatio)) - 1);
     return {
       supply, poolBalance, solRatio, price
     };
   }
 
   it('should estimate price for token amount correctly', async () => {
-    let amount = 13;
+    let amount = 13 * (10 ** decimals);
     let p = await getRequestParams(amount);
     let estimate = await instance.calculatePurchaseReturn.call(
       p.supply,
@@ -43,28 +38,24 @@ contract('BondingCurve', accounts => {
       p.price
     );
 
-    assert.isAtMost(Math.abs(estimate.valueOf() / (10 ** 18) - amount), 1, 'estimate should equal original amount');
+    assert.isAtMost(Math.abs(estimate.sub(amount)), 1e3, 'estimate should equal original amount');
   });
 
   it('should buy tokens correctly via default function', async () => {
-    let amount = 8;
+    let amount = 8 * (10 ** decimals);
 
     const startBalance = await instance.balanceOf.call(accounts[0]);
     let p = await getRequestParams(amount);
     let buyTokens = await instance.send(Math.floor(p.price));
     console.log('buyTokens via default gas', buyTokens.receipt.gasUsed);
 
-    // utils.logHelper(buyTokens.logs, 'LogBondingCurve');
-
     const endBalance = await instance.balanceOf.call(accounts[0]);
-    let amountBought = endBalance.valueOf() /
-      (10 ** decimals) - startBalance.valueOf() /
-      (10 ** decimals);
-    assert.isAtMost(Math.abs(amountBought - amount), 1, 'able to buy tokens via fallback');
+    let amountBought = endBalance.sub(startBalance);
+    assert.isAtMost(Math.abs(amountBought.sub(amount)), 1e3, 'able to buy tokens via fallback');
   });
 
   it('should buy tokens correctly', async () => {
-    let amount = 14;
+    let amount = 14 * (10 ** decimals);
 
     const startBalance = await instance.balanceOf.call(accounts[0]);
 
@@ -72,32 +63,25 @@ contract('BondingCurve', accounts => {
     let buyTokens = await instance.buy({ from: accounts[0], value: Math.floor(p.price) });
     console.log('buy gas', buyTokens.receipt.gasUsed);
 
-    // utils.logHelper(buyTokens.logs, 'LogBondingCurve');
     const endBalance = await instance.balanceOf.call(accounts[0]);
-    let amountBought = endBalance.valueOf() /
-      (10 ** decimals) - startBalance.valueOf() /
-      (10 ** decimals);
-    assert.isAtMost(Math.abs(amountBought - amount), 1, 'able to buy tokens');
+    let amountBought = endBalance.sub(startBalance);
+    assert.isAtMost(Math.abs(amountBought.sub(amount)), 1e4, 'able to buy tokens');
   });
 
   it('should buy tokens a second time correctly', async () => {
-    let amount = 5;
+    let amount = 5 * (10 ** decimals);
 
     const startBalance = await instance.balanceOf.call(accounts[0]);
 
     let p = await getRequestParams(amount);
     let buyTokens = await instance.buy({ from: accounts[0], value: Math.floor(p.price) });
-    console.log('buy gas', buyTokens.receipt.gasUsed);
+    // console.log('buy gas', buyTokens.receipt.gasUsed);
 
-    // utils.logHelper(buyTokens.logs, 'LogBondingCurve');
     const endBalance = await instance.balanceOf.call(accounts[0]);
-    let amountBought = endBalance.valueOf() /
-      (10 ** decimals) - startBalance.valueOf() /
-      (10 ** decimals);
-    assert.isAtMost(Math.abs(amountBought - amount), 1, 'able to buy tokens');
+    let amountBought = endBalance.sub(startBalance);
+    assert.isAtMost(Math.abs(amountBought.sub(amount)), 1e4, 'should be able to buy tokens');
   });
 
-  // TODO test that correct amount gets sent back
   it('should be able to sell tokens', async () => {
     let amount = await instance.balanceOf(accounts[0]);
     let sellAmount = Math.floor(amount / 2);
@@ -114,14 +98,12 @@ contract('BondingCurve', accounts => {
 
     let sell = await instance.sell(sellAmount.valueOf());
     console.log('sellTokens gas ', sell.receipt.gasUsed);
-    // utils.logHelper(sell.logs, 'LogBondingCurve');
 
     let endContractBalance = await web3.eth.getBalance(instance.address);
-    assert.equal(saleReturn.valueOf(), contractBalance - endContractBalance, 'contract change should match salre return');
+    assert.equal(saleReturn.valueOf(), contractBalance - endContractBalance, 'contract change should match sale return');
 
     const endBalance = await instance.balanceOf.call(accounts[0]);
-
-    assert.isAtMost(Math.abs(endBalance.valueOf() - (amount - sellAmount)), 10 ** 17, 'balance should be correct');
+    assert.isAtMost(Math.abs(endBalance.valueOf() * 1 - (amount - sellAmount)), 1e3, 'balance should be correct');
   });
 
   it('should not be able to buy anything with 0 ETH', async () => {
@@ -149,10 +131,9 @@ contract('BondingCurve', accounts => {
 
     let sell = await instance.sell(amount);
     console.log('sellTokens gas ', sell.receipt.gasUsed);
-    // utils.logHelper(sell.logs, 'LogBondingCurve');
 
     let endContractBalance = await web3.eth.getBalance(instance.address);
-    assert.equal(saleReturn.valueOf(), contractBalance - endContractBalance, 'contract change should match salre return');
+    assert.equal(saleReturn.valueOf(), contractBalance - endContractBalance, 'contract change should match sale return');
 
     const endBalance = await instance.balanceOf.call(accounts[0]);
     assert.equal(endBalance.valueOf(), 0, 'balance should be 0 tokens');
@@ -163,7 +144,6 @@ contract('BondingCurve', accounts => {
   });
 
   it('should be able to set max gas price', async function () {
-    // let owner = accounts[0];
     await instance.setGasPrice(1, { from: accounts[0] });
     gasPrice = await instance.gasPrice.call();
     assert.equal(1, gasPrice.valueOf(), 'gas price should update');
@@ -171,6 +151,30 @@ contract('BondingCurve', accounts => {
 
   it('should throw an error when attempting to buy with gas price higher than the universal limit', async () => {
     await expectThrow(instance.buy({ gasPrice: gasPrice + 1, value: 10 ** 18 }));
+  });
+
+  it('test calculateSaleReturn branches', async () => {
+    await expectThrow(instance.calculateSaleReturn(0, 0, 0, 0), 'should throw when params are 0');
+
+    let sellReturn = await instance.calculateSaleReturn(1, 1, 100000, 0);
+    assert.equal(0, sellReturn.toNumber(), 'sellReturn should be 0 when selling 0 tokens');
+
+    sellReturn = await instance.calculateSaleReturn(1, 1, 100000, 1);
+    assert.equal(1, sellReturn.toNumber(), 'sellReturn should be 1 when selling all tokens');
+
+    sellReturn = await instance.calculateSaleReturn(2, 2, 1000000, 1);
+    assert.equal(1, sellReturn.toNumber(), 'sellReturn return 1 when _connectorWeight = MAX_WEIGHT');
+  });
+
+
+  it('test calculatePurchaseReturn branches', async () => {
+    await expectThrow(instance.calculatePurchaseReturn(0, 0, 0, 0), 'should throw when params are 0');
+
+    let buyReturn = await instance.calculatePurchaseReturn(1, 1, 100000, 0);
+    assert.equal(0, buyReturn.toNumber(), 'sellReturn should be 0 when selling 0 tokens');
+
+    buyReturn = await instance.calculatePurchaseReturn(1, 1, 1000000, 1);
+    assert.equal(1, buyReturn.toNumber(), 'sellReturn should be 0 when selling 0 tokens');
   });
 });
 
